@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Awareness Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563EB;
+            --danger: #DC2626;
+            --success: #10B981;
+            --dark: #1F2937;
+            --light: #F3F4F6;
+            --outlook-blue: #0078D4;
+            --gray-500: #6B7280;
+            --gray-300: #D1D5DB;
+            --highlight: #FEF08A;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        body {
+            background: #F9FAFB;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1F2937;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 680px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+        
+        /* Login Page Styles */
+        .login-container {
+            text-align: center;
+            display: block;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+        
+        label {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input {
+            padding: 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        
+        .btn-start {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-start:hover {
+            background: #1D4ED8;
+        }
+        
+        /* Quiz Container - initially hidden */
+        .quiz-container {
+            display: none;
+        }
+        
+        /* Outlook-style Email UI */
+        .email-preview {
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .email-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+        
+        .email-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--outlook-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        
+        .email-sender-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .email-sender-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .email-sender-name {
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        
+        .email-sender-address {
+            color: var(--gray-500);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .email-time {
+            color: var(--gray-500);
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
+        .email-actions-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+        
+        .email-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--gray-500);
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .email-action-btn:hover {
+            background: #E5E7EB;
+            color: var(--dark);
+        }
+        
+        .email-action-primary {
+            background: transparent;
+            border: none;
+            color: var(--gray-500);
+            height: 28px;
+            padding: 0 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .email-action-primary:hover {
+            background: #E5E7EB;
+            color: var(--dark);
+        }
+        
+        .email-action-primary i {
+            font-size: 12px;
+        }
+        
+        .email-subject {
+            padding: 12px 16px;
+            border-bottom: 1px solid #E5E7EB;
+            font-weight: 600;
+            background: white;
+            font-size: 15px;
+        }
+        
+        .email-body {
+            padding: 16px;
+            line-height: 1.5;
+            background: white;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+        
+        .email-link {
+            color: var(--primary);
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .email-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--primary);
+            transition: width 0.2s;
+        }
+        
+        .email-link:hover::after {
+            width: 100%;
+        }
+        
+        .link-url-popup {
+            position: fixed;
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            font-size: 13px;
+            color: var(--dark);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .email-attachment {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            color: #4B5563;
+            font-size: 13px;
+        }
+        
+        /* Quiz Elements */
+        .question {
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+        }
+        
+        .question-prompt {
+            margin: 16px 0;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 15px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .option {
+            padding: 12px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            font-size: 14px;
+        }
+        
+        .option:hover {
+            background: #F9FAFB;
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+        
+        .option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .option.incorrect {
+            border-color: var(--danger);
+            background: rgba(220, 38, 38, 0.05);
+        }
+        
+        .feedback {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 4px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .feedback.show {
+            display: block;
+        }
+        
+        .feedback.correct {
+            background: rgba(16, 185, 129, 0.05);
+            color: var(--success);
+            border-left: 3px solid var(--success);
+        }
+        
+        .feedback.incorrect {
+            background: rgba(220, 38, 38, 0.05);
+            color: var(--danger);
+            border-left: 3px solid var(--danger);
+        }
+        
+        .feedback strong {
+            color: inherit;
+        }
+        
+        /* Progress & Navigation */
+        .progress-bar {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-next:hover:not(:disabled) {
+            background: #1D4ED8;
+        }
+        
+        .btn-prev {
+            background: #E5E7EB;
+            color: var(--dark);
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #D1D5DB;
+        }
+        
+        /* Results Screen */
+        .results {
+            text-align: center;
+            display: none;
+        }
+        
+        .results h2 {
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .restart-btn {
+            background: var(--primary);
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            background: #1D4ED8;
+        }
+        
+        /* Inspection Highlights */
+        .inspection-highlight {
+            position: absolute;
+            background-color: var(--highlight);
+            border: 2px dashed #CA8A04;
+            border-radius: 4px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .inspection-tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+            max-width: 280px;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .inspection-tooltip h4 {
+            margin: 0 0 8px 0;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .inspection-tooltip ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .inspection-tooltip li {
+            margin-bottom: 6px;
+        }
+        
+        .inspection-tooltip .do {
+            color: var(--success);
+        }
+        
+        .inspection-tooltip .dont {
+            color: var(--danger);
+        }
+        
+        .show-inspection {
+            opacity: 1;
+        }
+        
+        .highlight-sender {
+            animation: pulse-sender 2s infinite;
+        }
+        
+        .highlight-link {
+            animation: pulse-link 2s infinite;
+        }
+        
+        @keyframes pulse-sender {
+            0% { background-color: var(--highlight); }
+            50% { background-color: rgba(254, 240, 138, 0.5); }
+            100% { background-color: var(--highlight); }
+        }
+        
+        @keyframes pulse-link {
+            0% { color: var(--primary); }
+            50% { color: #1D4ED8; }
+            100% { color: var(--primary); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Page -->
+        <div class="login-container" id="login-container">
+            <h1>Phishing Awareness Training</h1>
+            <p>Please enter your email address to begin the quiz</p>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="user-email">Your Email Address</label>
+                    <input type="email" id="user-email" required placeholder="your.name@company.com">
+                </div>
+                <button type="submit" class="btn-start">Start Quiz</button>
+            </form>
+        </div>
+        
+        <!-- Quiz Container (initially hidden) -->
+        <div class="quiz-container" id="quiz-container">
+            <h1>Phishing Awareness Quiz</h1>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            
+            <div id="quiz">
+                <!-- Questions will be inserted here by JavaScript -->
+            </div>
+            
+            <div class="results" id="results">
+                <h2>Quiz Completed!</h2>
+                <div class="score" id="score"></div>
+                <p id="summary"></p>
+                <button class="restart-btn" id="restart">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="link-url-popup" id="linkPopup"></div>
+
+    <script>
+        // User data
+        let userEmail = '';
+        
+        // Quiz data with personalized content
+        const getQuizData = (userEmail) => [
+            {
+                sender: "Bank Security",
+                email: "support@yourbank.com",
+                time: "Today, 10:42 AM",
+                subject: "URGENT: Your account has been flagged",
+                body: `Dear ${userEmail.split('@')[0] || 'customer'},\n\nYour account has been flagged for suspicious activity. Verify your identity now by clicking here to login and avoid account suspension:\n\n[Click here to secure your account]\n\nSincerely,\nSecurity Team`,
+                links: ["bank-secure-login.com"],
+                options: ["Legitimate Email", "Phishing Email"],
+                answer: "Phishing Email",
+                explanation: "The urgent language and request to click a link are classic phishing tactics. Legitimate banks never ask for sensitive actions via email links.",
+                tip: "Always check the sender's domain and contact your bank directly through their official website.",
+                inspectionTips: {
+                    sender: {
+                        title: "Check the Sender Address",
+                        dos: [
+                            "Verify the domain matches the official organization",
+                            "Look for subtle misspellings (e.g., 'yourbank.com' vs 'your-bank.com')"
+                        ],
+                        donts: [
+                            "Trust the display name alone",
+                            "Assume it's safe if it looks similar to a real address"
+                        ]
+                    },
+                    links: {
+                        title: "Inspect Links Before Clicking",
+                        dos: [
+                            "Hover to preview the URL",
+                            "Look for HTTPS and legitimate domains"
+                        ],
+                        donts: [
+                            "Click without verifying",
+                            "Trust links that don't match the organization's official domain"
+                        ]
+                    }
+                }
+            },
+            {
+                sender: "IT Department",
+                email: "helpdesk@yourcompany.com",
+                time: "Yesterday, 3:15 PM",
+                subject: "Password Reset Required",
+                body: `Hello ${userEmail.split('@')[0] || 'user'},\n\nOur system detected unusual activity on your account. Please reset your password immediately by clicking here:\n\n[Reset your password now]\n\nIT Support Team`,
+                links: ["yourcompany-password-reset.com"],
+                options: ["Legitimate Email", "Phishing Email"],
+                answer: "Phishing Email",
+                explanation: "Your company's IT department would never ask you to reset your password via an email link. They would direct you to the official company portal.",
+                tip: "Always verify password reset requests through official channels.",
+                inspectionTips: {
+                    sender: {
+                        title: "Internal IT Communications",
+                        dos: [
+                            "Verify with your actual IT helpdesk",
+                            "Check previous emails from IT for consistency"
+                        ],
+                        donts: [
+                            "Click on password reset links in emails",
+                            "Assume internal-looking emails are always safe"
+                        ]
+                    },
+                    links: {
+                        title: "Password Reset Links",
+                        dos: [
+                            "Navigate directly to the company portal",
+                            "Contact IT through official channels"
+                        ],
+                        donts: [
+                            "Enter credentials through email links",
+                            "Assume urgency means legitimacy"
+                        ]
+                    }
+                }
+            },
+            {
+                sender: "HR Department",
+                email: "hr@yourcompany.org",
+                time: "Mon, Jun 5, 9:30 AM",
+                subject: "Mandatory: New Workplace Policy",
+                body: `All employees,\n\nPlease review the attached updated workplace policy document. Compliance is required by Friday.\n\nRegards,\nHuman Resources`,
+                attachment: "Policy_Update_Q2.pdf",
+                options: ["Legitimate Email", "Phishing Email"],
+                answer: "Phishing Email",
+                explanation: "Unexpected attachments from 'HR' are a common malware delivery method. Verify with your actual HR team before opening.",
+                tip: "Confirm unexpected policy changes through official company channels.",
+                inspectionTips: {
+                    sender: {
+                        title: "Internal Communications",
+                        dos: [
+                            "Verify with your actual HR department",
+                            "Check previous emails from HR for consistency"
+                        ],
+                        donts: [
+                            "Open unexpected attachments",
+                            "Assume internal emails are always safe"
+                        ]
+                    },
+                    attachment: {
+                        title: "Email Attachments",
+                        dos: [
+                            "Scan attachments with antivirus software",
+                            "Verify with the sender through another channel"
+                        ],
+                        donts: [
+                            "Enable macros in documents",
+                            "Open executable files (.exe, .bat, etc.)"
+                        ]
+                    }
+                }
+            },
+            {
+                sender: "Amazon",
+                email: "orders@amazon.com",
+                time: "Jun 3, 2:45 PM",
+                subject: "Order Confirmation #204-8765432-1234567",
+                body: `Hello ${userEmail.split('@')[0] || 'customer'},\n\nThank you for your order!\n\n• Item: Dell XPS 15 Laptop\n• Price: $1,200.00\n• Delivery: June 15, 2023\n\nTrack your package here: [Track your order]\n\nAmazon Customer Service`,
+                links: ["amazon.com/orders/204-8765432-1234567"],
+                options: ["Legitimate Email", "Phishing Email"],
+                answer: "Legitimate Email",
+                explanation: "This contains specific order details Amazon would have. Always verify unexpected orders by logging into your account directly.",
+                tip: "Check sender addresses carefully—phishers often use lookalike domains like 'amaz0n.com'.",
+                inspectionTips: {
+                    sender: {
+                        title: "Legitimate Order Confirmations",
+                        dos: [
+                            "Check for exact domain match ('amazon.com')",
+                            "Look for specific order details"
+                        ],
+                        donts: [
+                            "Click links if you didn't place an order",
+                            "Ignore small domain differences"
+                        ]
+                    },
+                    links: {
+                        title: "Legitimate Links",
+                        dos: [
+                            "Hover to verify the URL matches the official domain",
+                            "Log in directly to your account to verify"
+                        ],
+                        donts: [
+                            "Click if the order seems suspicious",
+                            "Enter credentials through email links"
+                        ]
+                    }
+                }
+            },
+            {
+                sender: "Microsoft Support",
+                email: "security@microsoft.com",
+                time: "Sun, Jun 4, 11:08 PM",
+                subject: "Unauthorized Login Attempt Detected",
+                body: `Security Alert:\n\nWe detected a login attempt from a new device in Germany. If this wasn't you, click here to secure your account immediately:\n\n[Secure your account now]\n\nMicrosoft Account Team`,
+                links: ["microsoft-account-security.com"],
+                options: ["Legitimate Email", "Phishing Email"],
+                answer: "Phishing Email",
+                explanation: "Microsoft will never ask you to reset passwords via email links. Real alerts direct you to sign in on their official site.",
+                tip: "Navigate directly to service websites instead of clicking email links.",
+                inspectionTips: {
+                    sender: {
+                        title: "Security Alerts",
+                        dos: [
+                            "Check the sender's domain carefully",
+                            "Look for your account-specific details"
+                        ],
+                        donts: [
+                            "Panic and click immediately",
+                            "Trust generic security warnings"
+                        ]
+                    },
+                    links: {
+                        title: "Account Security Links",
+                        dos: [
+                            "Navigate directly to the service website",
+                            "Check your account's security page"
+                        ],
+                        donts: [
+                            "Reset passwords through email links",
+                            "Provide credentials in popups"
+                        ]
+                    }
+                }
+            }
+        ];
+
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const loginForm = document.getElementById('login-form');
+        const quizContainer = document.getElementById('quiz-container');
+        const quizContent = document.getElementById('quiz');
+        const resultsContainer = document.getElementById('results');
+        const scoreElement = document.getElementById('score');
+        const summaryElement = document.getElementById('summary');
+        const progressBar = document.getElementById('progress');
+        const restartBtn = document.getElementById('restart');
+        const linkPopup = document.getElementById('linkPopup');
+
+        // Quiz State
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let inspectionMode = false;
+        let currentInspectionStep = 0;
+        let quizData = [];
+
+        // Handle login form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            userEmail = document.getElementById('user-email').value;
+            
+            // Validate email format
+            if (!userEmail.includes('@') || !userEmail.includes('.')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // Initialize quiz with personalized content
+            quizData = getQuizData(userEmail);
+            
+            // Hide login, show quiz
+            loginContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            // Initialize quiz
+            initQuiz();
+        });
+
+        // Initialize Quiz
+        function initQuiz() {
+            quizContent.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const questionEl = document.createElement('div');
+                questionEl.classList.add('question');
+                if (index === 0) questionEl.classList.add('active');
+                
+                // Extract first letter for avatar
+                const avatarLetter = question.sender.charAt(0).toUpperCase();
+                
+                // Process body with links
+                let bodyWithLinks = question.body;
+                if (question.links) {
+                    question.links.forEach((link, i) => {
+                        const linkText = question.body.match(/\[(.*?)\]/g)[i].replace(/[\[\]]/g, '');
+                        bodyWithLinks = bodyWithLinks.replace(
+                            /\[.*?\]/,
+                            `<span class="email-link" data-url="${link}">${linkText}</span>`
+                        );
+                    });
+                }
+                
+                // Build email preview
+                let emailHTML = `
+                    <div class="email-preview" id="email-${index}">
+                        <div class="email-header">
+                            <div class="email-avatar">${avatarLetter}</div>
+                            <div class="email-sender-info">
+                                <div class="email-sender-line">
+                                    <div>
+                                        <div class="email-sender-name">${question.sender}</div>
+                                        <div class="email-sender-address" id="sender-address-${index}">${question.email}</div>
+                                    </div>
+                                    <div class="email-time">${question.time}</div>
+                                </div>
+                            </div>
+                            <div class="email-actions-menu">
+                                <button class="email-action-primary" title="Reply">
+                                    <i class="fas fa-reply"></i>
+                                    <span>Reply</span>
+                                </button>
+                                <button class="email-action-primary" title="Reply all">
+                                    <i class="fas fa-reply-all"></i>
+                                    <span>Reply all</span>
+                                </button>
+                                <button class="email-action-primary" title="Forward">
+                                    <i class="fas fa-share"></i>
+                                    <span>Forward</span>
+                                </button>
+                                <button class="email-action-btn" title="More actions">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="email-subject">${question.subject}</div>
+                        <div class="email-body">${bodyWithLinks.replace(/\n/g, '<br>')}</div>
+                `;
+                
+                // Add attachment if exists
+                if (question.attachment) {
+                    emailHTML += `
+                        <div class="email-attachment" id="attachment-${index}">
+                            <i class="fas fa-paperclip"></i>
+                            <span>${question.attachment}</span>
+                        </div>
+                    `;
+                }
+                
+                emailHTML += `</div>`;
+                
+                // Full question HTML
+                questionEl.innerHTML = `
+                    ${emailHTML}
+                    <div class="question-prompt">Is this email legitimate or a phishing attempt?</div>
+                    <div class="options">
+                        ${question.options.map(option => `
+                            <div class="option" data-answer="${option}">${option}</div>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback-${index}">
+                        <p><strong>Explanation:</strong> ${question.explanation}</p>
+                        <p><strong>Tip:</strong> ${question.tip}</p>
+                    </div>
+                    <div class="inspection-highlight" id="highlight-sender-${index}"></div>
+                    <div class="inspection-highlight" id="highlight-link-${index}"></div>
+                    <div class="inspection-highlight" id="highlight-attachment-${index}"></div>
+                    <div class="inspection-tooltip" id="tooltip-sender-${index}"></div>
+                    <div class="inspection-tooltip" id="tooltip-link-${index}"></div>
+                    <div class="inspection-tooltip" id="tooltip-attachment-${index}"></div>
+                `;
+                quizContent.appendChild(questionEl);
+            });
+
+            // Add navigation buttons
+            const navButtons = document.createElement('div');
+            navButtons.classList.add('navigation');
+            navButtons.innerHTML = `
+                <button class="btn-prev" id="prev" disabled>Previous</button>
+                <button class="btn-next" id="next">${currentQuestion === quizData.length - 1 ? 'Finish' : 'Next'}</button>
+            `;
+            quizContent.appendChild(navButtons);
+
+            // Event Listeners
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectAnswer);
+            });
+
+            document.getElementById('prev').addEventListener('click', prevQuestion);
+            document.getElementById('next').addEventListener('click', nextQuestion);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            // Link hover effects
+            document.querySelectorAll('.email-link').forEach(link => {
+                link.addEventListener('mouseenter', showLinkUrl);
+                link.addEventListener('mouseleave', hideLinkUrl);
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showLinkPopup(e.target.dataset.url, e.clientX, e.clientY);
+                });
+            });
+
+            updateProgress();
+        }
+
+        // Show link URL on hover
+        function showLinkUrl(e) {
+            const link = e.target;
+            const url = link.dataset.url;
+            const rect = link.getBoundingClientRect();
+            
+            linkPopup.textContent = url;
+            linkPopup.style.left = `${rect.left}px`;
+            linkPopup.style.top = `${rect.bottom + 4}px`;
+            linkPopup.style.opacity = '1';
+        }
+
+        function hideLinkUrl() {
+            linkPopup.style.opacity = '0';
+        }
+
+        // Show clicked link popup
+        function showLinkPopup(url, x, y) {
+            linkPopup.textContent = url;
+            linkPopup.style.left = `${x}px`;
+            linkPopup.style.top = `${y + 20}px`;
+            linkPopup.style.opacity = '1';
+            
+            setTimeout(() => {
+                linkPopup.style.opacity = '0';
+            }, 2000);
+        }
+
+        // Select Answer
+        function selectAnswer(e) {
+            const selectedOption = e.target;
+            const questionEl = selectedOption.closest('.question');
+            const options = questionEl.querySelectorAll('.option');
+            const feedback = questionEl.querySelector('.feedback');
+            const questionIndex = Array.from(questionEl.parentNode.children).indexOf(questionEl);
+
+            // Deselect all options
+            options.forEach(opt => opt.classList.remove('selected'));
+
+            // Select clicked option
+            selectedOption.classList.add('selected');
+
+            // Check answer
+            const isCorrect = selectedOption.dataset.answer === quizData[questionIndex].answer;
+            if (isCorrect) {
+                selectedOption.classList.add('correct');
+                feedback.classList.add('correct');
+            } else {
+                selectedOption.classList.add('incorrect');
+                feedback.classList.add('incorrect');
+                // Highlight correct answer
+                options.forEach(opt => {
+                    if (opt.dataset.answer === quizData[questionIndex].answer) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+
+            // Store user answer
+            userAnswers[questionIndex] = {
+                answer: selectedOption.dataset.answer,
+                isCorrect: isCorrect
+            };
+
+            // Show feedback
+            feedback.classList.add('show');
+
+            // Enable next button
+            document.getElementById('next').disabled = false;
+
+            // Start inspection mode if answer was incorrect
+            if (!isCorrect) {
+                startInspection(questionIndex);
+            }
+        }
+
+        // Start inspection process for a question
+        function startInspection(questionIndex) {
+            inspectionMode = true;
+            currentInspectionStep = 0;
+            const question = quizData[questionIndex];
+            const emailPreview = document.getElementById(`email-${questionIndex}`);
+            
+            // Create inspection steps
+            const inspectionSteps = [];
+            
+            // Always include sender inspection
+            inspectionSteps.push({
+                element: document.getElementById(`sender-address-${questionIndex}`),
+                tooltip: document.getElementById(`tooltip-sender-${questionIndex}`),
+                highlight: document.getElementById(`highlight-sender-${questionIndex}`),
+                type: 'sender',
+                data: question.inspectionTips.sender
+            });
+            
+            // Include link inspection if email has links
+            if (question.links && question.links.length > 0) {
+                const firstLink = emailPreview.querySelector('.email-link');
+                inspectionSteps.push({
+                    element: firstLink,
+                    tooltip: document.getElementById(`tooltip-link-${questionIndex}`),
+                    highlight: document.getElementById(`highlight-link-${questionIndex}`),
+                    type: 'links',
+                    data: question.inspectionTips.links
+                });
+            }
+            
+            // Include attachment inspection if email has attachment
+            if (question.attachment) {
+                inspectionSteps.push({
+                    element: document.getElementById(`attachment-${questionIndex}`),
+                    tooltip: document.getElementById(`tooltip-attachment-${questionIndex}`),
+                    highlight: document.getElementById(`highlight-attachment-${questionIndex}`),
+                    type: 'attachment',
+                    data: question.inspectionTips.attachment
+                });
+            }
+            
+            // Process inspection steps one by one
+            function processNextStep() {
+                // Clear any existing inspection highlights from the previous step
+                if (currentInspectionStep > 0) {
+                    const prevStep = inspectionSteps[currentInspectionStep - 1];
+                    prevStep.highlight.classList.remove('show-inspection');
+                    prevStep.tooltip.classList.remove('show-inspection');
+                    prevStep.element.classList.remove('highlight-sender', 'highlight-link');
+                }
+                
+                // Check if inspection is complete
+                if (currentInspectionStep >= inspectionSteps.length) {
+                    inspectionMode = false;
+                    return;
+                }
+                
+                const step = inspectionSteps[currentInspectionStep];
+                
+                // Position highlight
+                const rect = step.element.getBoundingClientRect();
+                step.highlight.style.width = `${rect.width + 8}px`;
+                step.highlight.style.height = `${rect.height + 8}px`;
+                step.highlight.style.left = `${rect.left - 4}px`;
+                step.highlight.style.top = `${rect.top - 4}px`;
+                
+                // Position tooltip
+                step.tooltip.innerHTML = `
+                    <h4>${step.data.title}</h4>
+                    <div class="do">
+                        <strong>Do:</strong>
+                        <ul>
+                            ${step.data.dos.map(doItem => `<li>${doItem}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="dont">
+                        <strong>Don't:</strong>
+                        <ul>
+                            ${step.data.donts.map(dontItem => `<li>${dontItem}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <button class="btn-next" id="inspectionNextButton" style="margin-top: 10px; float: right">
+                        ${currentInspectionStep === inspectionSteps.length - 1 ? 'Finish' : 'Next'}
+                    </button>
+                `;
+                
+                // Position tooltip below the highlighted element
+                step.tooltip.style.left = `${rect.left}px`;
+                step.tooltip.style.top = `${rect.bottom + 10}px`;
+                
+                // Show highlight and tooltip
+                step.highlight.classList.add('show-inspection');
+                step.tooltip.classList.add('show-inspection');
+                
+                // Add appropriate highlight class
+                if (step.type === 'sender') {
+                    step.element.classList.add('highlight-sender');
+                } else if (step.type === 'links') {
+                    step.element.classList.add('highlight-link');
+                }
+                
+                // Add event listener for next button
+                const nextButton = step.tooltip.querySelector('#inspectionNextButton');
+                nextButton.addEventListener('click', () => {
+                    currentInspectionStep++;
+                    processNextStep();
+                });
+            }
+            
+            // Start the first step
+            processNextStep();
+        }
+
+        // Next Question
+        function nextQuestion() {
+            if (inspectionMode) return;
+            
+            if (currentQuestion < quizData.length - 1) {
+                document.querySelector('.question.active').classList.remove('active');
+                currentQuestion++;
+                document.querySelectorAll('.question')[currentQuestion].classList.add('active');
+                document.getElementById('prev').disabled = false;
+                document.getElementById('next').textContent = currentQuestion === quizData.length - 1 ? 'Finish' : 'Next';
+                document.getElementById('next').disabled = true;
+                updateProgress();
+            } else {
+                showResults();
+            }
+        }
+
+        // Previous Question
+        function prevQuestion() {
+            if (inspectionMode) return;
+            
+            document.querySelector('.question.active').classList.remove('active');
+            currentQuestion--;
+            document.querySelectorAll('.question')[currentQuestion].classList.add('active');
+            document.getElementById('next').textContent = currentQuestion === quizData.length - 1 ? 'Finish' : 'Next';
+            document.getElementById('prev').disabled = currentQuestion === 0;
+            updateProgress();
+        }
+
+        // Update Progress Bar
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Show Results
+        function showResults() {
+            quizContent.style.display = 'none';
+            resultsContainer.style.display = 'block';
+
+            // Calculate score
+            score = userAnswers.filter(answer => answer && answer.isCorrect).length;
+            scoreElement.textContent = `You scored ${score} out of ${quizData.length}!`;
+            
+            // Summary
+            summaryElement.innerHTML = `
+                <p>${score >= quizData.length * 0.8 ? '🛡️ Excellent! You can spot phishing attempts like a pro.' : 
+                  score >= quizData.length * 0.5 ? '🔍 Good start! Review the explanations to improve.' : 
+                  '⚠️ Stay vigilant! Check the tips to protect yourself.'}</p>
+                <p>Remember these key points:</p>
+                <ul>
+                    <li>Always verify sender email addresses</li>
+                    <li>Hover over links before clicking</li>
+                    <li>Be cautious with unexpected attachments</li>
+                    <li>When in doubt, contact the organization directly</li>
+                </ul>
+                <p>Your results have been recorded for ${userEmail}</p>
+            `;
+        }
+
+        // Restart Quiz
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            quizContent.style.display = 'block';
+            resultsContainer.style.display = 'none';
+            initQuiz();
+        }
+    </script>
+</body>
+</html>
